@@ -69,5 +69,7 @@ def login():
         "access_token" : access_token
     })
 
+if __name__ == '__main__':
+    app.run(debug = True)
 
 
