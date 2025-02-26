@@ -9,7 +9,7 @@
 <body>
     <div class="container">
         <h1>Login to your account</h1>
-        <form action="#" method="POST">
+        <form id = 'login' action="#" method="POST">
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" required>
             <label for="password">Password:</label>
@@ -18,5 +18,34 @@
         </form>
         <p>Don't have an account? <a href="./signup.html">Sign up here</a>.</p>
     </div>
+    <script>
+        document.getElementById('login').addEventListener('submit',function(e) {
+            e.preventDefault();
+
+            
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+            
+            const info = {
+                password: password,
+                email: email
+            };
+
+            fetch('/login',{
+                methods : 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body : JSON.stringify(info)
+            }).then(response => response.json())
+            .then(data =>{ 
+                if(data.accesstoken){
+                    console.log('Successful')
+                }
+                else{
+                    alert('Invalid credentials');
+                }})
+        })
+    </script>
 </body>
 </html>

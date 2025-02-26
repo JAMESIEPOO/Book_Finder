@@ -2,6 +2,10 @@ from flask import Flask, jsonify
 import os
 import psycopg2
 
+from dotenv import load_dotenv
+
+
+
 app = Flask(__name__)
 def connect_db():
     return psycopg2.connect(
