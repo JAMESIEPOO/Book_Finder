@@ -15,6 +15,36 @@
                 return false;
             }
             return true;
+
+            var username = document.getElementById('username').value;
+            var email = document.getElementById('email').value;
+            
+            const info = {
+                username: username,
+                password: password,
+                email: email
+            };
+
+            fetch('/signup', {
+                method : 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body : JSON.stringify(info)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.message === 'User created succesfully'){
+                    alert('Sign up sucessful');
+                }
+                else{
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error =>{
+                console.error('Error', error);
+                alert('Error signing up');
+            })
         }
     </script>
 </head>
