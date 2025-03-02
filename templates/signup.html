@@ -6,7 +6,9 @@
     <link rel="stylesheet" href="../static/css/style.css">
     <title>Sign Up</title>
     <script>
-        function validateForm() {
+        function validateForm(event) {
+            event.preventDefault();  // Prevent form from submitting the traditional way
+
             var password = document.getElementById("password").value;
             var confirmPassword = document.getElementById("confirm-password").value;
 
@@ -14,44 +16,45 @@
                 alert("Passwords do not match.");
                 return false;
             }
-            return true;
 
             var username = document.getElementById('username').value;
             var email = document.getElementById('email').value;
-            
+
             const info = {
                 username: username,
                 password: password,
+                confirmPassword: confirmPassword,
                 email: email
             };
 
-            fetch('/signup', {
-                method : 'POST',
+            // Send a POST request with JSON data
+            fetch('/auth/signup', {
+                method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',  // Set the content type to JSON
                 },
-                body : JSON.stringify(info)
+                body: JSON.stringify(info)  // Convert the data to a JSON string
             })
             .then(response => response.json())
             .then(data => {
-                if(data.message === 'User created succesfully'){
-                    alert('Sign up sucessful');
-                }
-                else{
+                if (data.message === 'User registered successfully!') {
+                    alert('Sign up successful');
+                    window.location.href = "/login";  // Redirect to login page after successful sign-up
+                } else {
                     alert('Error: ' + data.message);
                 }
             })
-            .catch(error =>{
-                console.error('Error', error);
+            .catch(error => {
+                console.error('Error:', error);
                 alert('Error signing up');
-            })
+            });
         }
     </script>
 </head>
 <body>
     <div class="container">
         <h1>Sign Up for a new account</h1>
-        <form action="#" method="POST" onsubmit="return validateForm()">
+        <form onsubmit="validateForm(event)">
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" required>
             <label for="email">Email:</label>
@@ -62,7 +65,7 @@
             <input type="password" id="confirm-password" name="confirm-password" required>
             <button type="submit">Sign Up</button>
         </form>
-        <p>Already have an account? <a href="./login.html">Log in here</a>.</p>
+        <p>Already have an account? <a href="./login">Log in here</a>.</p>
     </div>
 </body>
 </html>
