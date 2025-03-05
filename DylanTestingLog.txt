@@ -1,4 +1,4 @@
 Sprint 3:
 
 Redirection from login to signup works exactly as it should
-Sign up and Log in pages return errors, saying "Error signing up" or "Error logging in"
+Sign up and Log in pages return errors once fields are filled out and the button is clicked, saying "Error signing up" or "Error logging in"
