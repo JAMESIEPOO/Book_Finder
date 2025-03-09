@@ -2,3 +2,4 @@ Sprint 3:
 
 Redirection from login to signup works exactly as it should
 Sign up and Log in pages return errors once fields are filled out and the button is clicked, saying "Error signing up" or "Error logging in"
+Cannot properly test the other pages, going by their links results in an error 404 for things like /search and /publisher, likely due to not being logged in.
