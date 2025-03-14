@@ -2,12 +2,41 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-    {% block head %}
-    {% endblock %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Page</title>
+    <link rel="stylesheet" type="text/css" href="../static/css/style_base.css">
+    <script>
+        function toggleMenu() {
+            document.getElementById("menu-items").classList.toggle("show");
+        }
+    </script>
 </head>
 <body>
-    {% block body %}
-    {% endblock %}
+    <header class="top-header">
+        <div class="hamburger-menu" onclick="toggleMenu()">
+            &#9776; 
+            <ul id="menu-items" class="menu">
+                <li><a href="Book Detail Page.html">Book Profile</a></li>
+            </ul>
+        </div>
+        <div class="search-box">
+            <a fa-search class="fa fa-search" href="search_page.html"></a>
+            <input type="text" placeholder="Search for books...">
+            <a href="search_page.html" class="search-button">Search</a>
+            <a href="search_page.html" class="search-icon">🔍</a>
+        </div>
+        <h1 class="header-title">Welcome to the Book Store</h1>
+        <div class="auth-buttons">
+            <a href="login.html" class="auth-box">Login</a>
+            <a href="signup.html" class="auth-box">Sign Up</a>
+        </div>
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    <footer>
+        <p>&copy; 2025 My Website</p>
+    </footer>
+    {% block extra_scripts %}{% endblock %}
 </body>
 </html>
