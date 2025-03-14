@@ -1,71 +1,87 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../static/css/style.css">
-    <title>Sign Up</title>
-    <script>
-        function validateForm(event) {
-            event.preventDefault();  // Prevent form from submitting the traditional way
+{% extends 'base.html' %}
 
-            var password = document.getElementById("password").value;
-            var confirmPassword = document.getElementById("confirm-password").value;
+{% block title %}Sign Up - Book Finder{% endblock %}
 
-            if (password != confirmPassword) {
-                alert("Passwords do not match.");
-                return false;
-            }
+{% block content %}
+<section class="auth-container">
+    <h1>Join Our Literary Community</h1>
+    <div class="error-message" id="errorMessage"></div>
+    <form class="auth-form" id="signup" onsubmit="validateForm(event)">
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" placeholder="Enter your username" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+        </div>
 
-            var username = document.getElementById('username').value;
-            var email = document.getElementById('email').value;
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="••••••••" required>
+        </div>
 
-            const info = {
-                username: username,
-                password: password,
-                confirmPassword: confirmPassword,
-                email: email
-            };
+        <div class="form-group">
+            <label for="confirm-password">Confirm Password</label>
+            <input type="password" id="confirm-password" name="confirm-password" placeholder="••••••••" required>
+        </div>
 
-            // Send a POST request with JSON data
-            fetch('/auth/signup', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',  // Set the content type to JSON
-                },
-                body: JSON.stringify(info)  // Convert the data to a JSON string
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.message === 'User registered successfully!') {
-                    alert('Sign up successful');
-                    window.location.href = "/login";  // Redirect to login page after successful sign-up
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error signing up');
-            });
-        }
-    </script>
-</head>
-<body>
-    <div class="container">
-        <h1>Sign Up for a new account</h1>
-        <form onsubmit="validateForm(event)">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required>
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
-            <label for="confirm-password">Confirm Password:</label>
-            <input type="password" id="confirm-password" name="confirm-password" required>
-            <button type="submit">Sign Up</button>
-        </form>
-        <p>Already have an account? <a href="./login">Log in here</a>.</p>
+        <button type="submit">Create Account</button>
+    </form>
+    
+    <div class="auth-links">
+        <p>Already a member? <a href="{{ url_for('auth_app.login_page') }}">Sign in here</a></p>
     </div>
-</body>
-</html>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function validateForm(event) {
+        event.preventDefault();
+        const form = document.getElementById('signup');
+        const errorMessage = document.getElementById('errorMessage');
+
+        // Clear previous errors
+        errorMessage.style.display = 'none';
+
+        // Password match validation
+        if (form.password.value !== form.confirmPassword.value) {
+            errorMessage.textContent = "Passwords do not match!";
+            errorMessage.style.display = 'block';
+            return;
+        }
+
+        // Prepare form data
+        const formData = {
+            username: form.username.value,
+            email: form.email.value,
+            password: form.password.value
+        };
+
+        // Send request
+        fetch('{{ url_for("auth_app.signup") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message === 'User registered successfully!') {
+                window.location.href = "{{ url_for('auth_app.login_page') }}";
+            } else {
+                errorMessage.textContent = data.message || 'Registration failed';
+                errorMessage.style.display = 'block';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            errorMessage.textContent = 'Connection error. Please try again.';
+            errorMessage.style.display = 'block';
+        });
+    }
+</script>
+{% endblock %}

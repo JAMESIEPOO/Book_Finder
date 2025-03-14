@@ -1,61 +1,69 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../static/css/style.css">
-    <title>Login</title>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            document.getElementById('login').addEventListener('submit', function (e) {
-                e.preventDefault();  // Prevent form from submitting the default way
+{% extends 'base.html' %}
 
-                // Gather input values
-                var email = document.getElementById('email').value;
-                var password = document.getElementById('password').value;
+{% block title %}Login{% endblock %}
 
-                const info = {
-                    email: email,
-                    password: password
-                };
+{% block content %}
+<section class="auth-container">
+    <h1>Member Login</h1>
+    <div class="error-message" id="errorMessage"></div>
+    <form class="auth-form" id="login">
+        <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="••••••••" required>
+        </div>
 
-                // Send the login request via fetch
-                fetch('/auth/login', {
-                    method: 'POST',  // Correct method name here
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(info)  // Convert to JSON
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.access_token) {  // Correct key for success
-                        console.log('Login successful!');
-                        alert('Login successful!');
-                        // Optionally, redirect to another page
-                    } else {
-                        alert('Invalid credentials');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error during login');
-                });
+        <button type="submit">Access Your Library</button>
+    </form>
+    
+    <div class="auth-links">
+        <p>New here? <a href="{{ url_for('auth_app.signup_page') }}">Create account</a></p>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('login').addEventListener('submit', function (e) {
+            e.preventDefault();  // Prevent form from submitting the default way
+
+            // Gather input values
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+
+            const info = {
+                email: email,
+                password: password
+            };
+
+            // Send the login request via fetch
+            fetch('{{ url_for("auth_app.login_page") }}', {
+                method: 'POST',  // Correct method name here
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(info)  // Convert to JSON
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.access_token) {  // Correct key for success
+                    console.log('Login successful!');
+                    alert('Login successful!');
+                    // Optionally, redirect to another page
+                } else {
+                    alert('Invalid credentials');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error during login');
             });
         });
-    </script>
-</head>
-<body>
-    <div class="container">
-        <h1>Login to your account</h1>
-        <form id="login" action="#" method="POST">
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
-            <button type="submit">Login</button>
-        </form>
-        <p>Don't have an account? <a href="./signup">Sign up here</a>.</p>
-    </div>
-</body>
-</html>
+    });
+</script>
+{% endblock %}
