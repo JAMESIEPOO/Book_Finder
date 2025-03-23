@@ -28,6 +28,11 @@ def get_book(isbn):
         return jsonify(book)
     return jsonify({"error": "Book not found"}), 404
 
+@app.route("/api/wishlist", methods=["GET"])
+def get_wishlist():
+    wishlist_books = [books[isbn] for isbn in wishlist if isbn in books]
+    return jsonify({"wishlist": wishlist_books})
+
 @app.route("/api/wishlist", methods=["POST"])
 def add_to_wishlist():
     data = request.json
