@@ -3,40 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Main Page</title>
-    <link rel="stylesheet" type="text/css" href="../static/css/style_base.css">
-    <script>
-        function toggleMenu() {
-            document.getElementById("menu-items").classList.toggle("show");
-        }
-    </script>
+    <title>{% block title %}Book Finder{% endblock %}</title>
+    
+    <!-- Link to Main CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome for Icons -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <header class="top-header">
-        <div class="hamburger-menu" onclick="toggleMenu()">
-            &#9776; 
-            <ul id="menu-items" class="menu">
-                <li><a href="Book Detail Page.html">Book Profile</a></li>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <h1>📚 Book Finder</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('auth_app.home') }}">Home</a></li>
+                <li><a href="{{ url_for('auth_app.login_page') }}">Login</a></li>
+                <li><a href="{{ url_for('auth_app.signup_page') }}">Sign Up</a></li>
+                <li><a href="{{ url_for('auth_app.search_page') }}">Search</a></li>
             </ul>
-        </div>
-        <div class="search-box">
-            <a fa-search class="fa fa-search" href="search_page.html"></a>
-            <input type="text" placeholder="Search for books...">
-            <a href="search_page.html" class="search-button">Search</a>
-            <a href="search_page.html" class="search-icon">🔍</a>
-        </div>
-        <h1 class="header-title">Welcome to the Book Store</h1>
-        <div class="auth-buttons">
-            <a href="login.html" class="auth-box">Login</a>
-            <a href="signup.html" class="auth-box">Sign Up</a>
-        </div>
+        </nav>
     </header>
+
+    <!-- Main Content Block -->
     <main>
         {% block content %}{% endblock %}
     </main>
+
+    <!-- Footer -->
     <footer>
-        <p>&copy; 2025 My Website</p>
+        <p>&copy; 2025 Book Finder | All Rights Reserved</p>
+        <p>
+            Partnered with <a href="https://www.waketech.edu" target="_blank" rel="noopener noreferrer">Wake Tech Community College</a>
+        </p>
     </footer>
-    {% block extra_scripts %}{% endblock %}
+
 </body>
 </html>

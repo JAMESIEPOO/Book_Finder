@@ -6,14 +6,15 @@ from dotenv import dotenv_values
 from datetime import timedelta
 
 # Create Flask app and configure JWT
-app = Flask(__name__)
+# app = Flask(__name__)
 
-app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(minutes=60)
-app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(days=7)
-app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'your-secret-key')
+#app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(minutes=60)
+#app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(days=7)
+#app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'your-secret-key')
 
 # Initialize Blueprint for authentication routes
-auth_app = Blueprint('auth_app', __name__)
+auth_app = Blueprint('auth_app', __name__, template_folder='../templates') 
+main_app = Blueprint('main_app', __name__, template_folder='../templates') 
 
 # Function to connect to the database
 def connect_db():
@@ -24,6 +25,12 @@ def connect_db():
         host = 'localhost',
         port = '5432',
     )
+
+# Route for Home Page
+@auth_app.route('/')
+def home():
+    return render_template('index.html')
+
 
 # Route for rendering the signup page
 @auth_app.route('/signup', methods=['GET'])
@@ -87,8 +94,16 @@ def login():
         "access_token": access_token
     })
 
-# Register the auth blueprint to the main app
-app.register_blueprint(auth_app, url_prefix='/auth')
+# Add Route for Search Page
+@auth_app.route('/search')
+def search_page():
+    return render_template('search_page.html')
+
+# Add Route for Book Detail Page
+@auth_app.route('/book/<int:book_id>')
+def book_detail_page(book_id):
+    return render_template('Book detail page.html', book_id=book_id)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
