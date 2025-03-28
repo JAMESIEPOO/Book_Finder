@@ -3,3 +3,7 @@ Sprint 3:
 Redirection from login to signup works exactly as it should
 Sign up and Log in pages return errors once fields are filled out and the button is clicked, saying "Error signing up" or "Error logging in"
 Cannot properly test the other pages, going by their links results in an error 404 for things like /search and /publisher, likely due to not being logged in.
+
+Sprint 4:
+Issues pertaining to not being able to test the other pages has been fixed somewhat, the search page now works but publisher and authors still does not, and the search page doesn't redirect anywhere at the moment
+The login and signup issues continue to persist but this time no error pop ups are returned, as once you click the button to sign up or log in the page effectively reloads.
