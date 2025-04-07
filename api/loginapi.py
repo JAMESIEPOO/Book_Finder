@@ -1,25 +1,19 @@
-from flask import Flask, request, jsonify, render_template, Blueprint
+from flask import Flask, request, jsonify, render_template, Blueprint, redirect, url_for
 from flask_jwt_extended import create_access_token
 import psycopg2
 import os
+import bcrypt
 from dotenv import dotenv_values
 from datetime import timedelta
 
-# Create Flask app and configure JWT
-# app = Flask(__name__)
-
-#app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(minutes=60)
-#app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(days=7)
-#app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'your-secret-key')
-
 # Initialize Blueprint for authentication routes
-auth_app = Blueprint('auth_app', __name__, template_folder='../templates') 
-main_app = Blueprint('main_app', __name__, template_folder='../templates') 
+auth_app = Blueprint('auth_app', __name__, template_folder='../templates')
+main_app = Blueprint('main_app', __name__, template_folder='../templates')
 
 # Function to connect to the database
 def connect_db():
     return psycopg2.connect(
-        dbname = 'Book_Finder_V2',
+        dbname=os.getenv('DB_NAME'),
         user= os.getenv('USER_DB','postgres'),
         password= os.getenv('PASSWORD_DB','password'),
         host = 'localhost',
@@ -45,6 +39,10 @@ def signup():
     password = data.get('password')
     email = data.get('email')
 
+    # Hash the password
+    salt = bcrypt.gensalt()
+    hashed_password = bcrypt.hashpw(password.encode(), salt)
+
     conn = connect_db()
     cursor = conn.cursor()
 
@@ -54,9 +52,9 @@ def signup():
     if existing_user:
         return jsonify({"message": "Email already in use"}), 400
 
-    # Insert new user into the database without password hashing (for testing)
+    # Insert new user into the database with hashed password
     cursor.execute('INSERT INTO "User" (username, email, password) VALUES (%s, %s, %s)',
-                   (username, email, password))
+                   (username, email, hashed_password.decode()))  # Store as string
     conn.commit()
     conn.close()
 
@@ -77,13 +75,13 @@ def login():
     conn = connect_db()
     cursor = conn.cursor()
 
-    # Query the database for user email and password (no hashing for now)
+    # Query the database for user email and password hash
     cursor.execute('SELECT "userID", "password" FROM "User" WHERE email = %s', (email,))
     user = cursor.fetchone()
     conn.close()
 
-    # Check if the user exists and if the password matches
-    if not user or user[1] != password:
+    # Check if the user exists and if the password matches the hashed password
+    if not user or not bcrypt.checkpw(password.encode('utf-8'), user[1].encode('utf-8')):
         return jsonify({"message": 'Invalid credentials'}), 401
 
     # Generate JWT access token

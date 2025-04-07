@@ -1,69 +1,72 @@
 {% extends 'base.html' %}
 
-{% block title %}Login{% endblock %}
+{% block title %}Login - Book Finder{% endblock %}
 
 {% block content %}
 <section class="auth-container">
-    <h1>Member Login</h1>
+    <h1>Welcome Back</h1>
     <div class="error-message" id="errorMessage"></div>
-    <form class="auth-form" id="login">
+    <div class="success-message" id="successMessage"></div>
+    <form class="auth-form" id="login" method="POST" onsubmit="validateForm(event)">
         <div class="form-group">
             <label for="email">Email Address</label>
             <input type="email" id="email" name="email" placeholder="Enter your email" required>
         </div>
-        
+
         <div class="form-group">
             <label for="password">Password</label>
             <input type="password" id="password" name="password" placeholder="••••••••" required>
         </div>
 
-        <button type="submit">Access Your Library</button>
+        <button type="submit">Log In</button>
     </form>
-    
+
     <div class="auth-links">
-        <p>New here? <a href="{{ url_for('auth_app.signup_page') }}">Create account</a></p>
+        <p>Not a member? <a href="{{ url_for('auth_app.signup_page') }}">Sign up here</a></p>
     </div>
 </section>
 {% endblock %}
 
 {% block scripts %}
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        document.getElementById('login').addEventListener('submit', function (e) {
-            e.preventDefault();  // Prevent form from submitting the default way
+    function validateForm(event) {
+    console.log(event)
+    event.preventDefault();  // Prevent the default form submission
 
-            // Gather input values
-            var email = document.getElementById('email').value;
-            var password = document.getElementById('password').value;
+    const form = document.getElementById('login');
+    const errorMessage = document.getElementById('errorMessage');
 
-            const info = {
-                email: email,
-                password: password
-            };
+    // Clear previous errors
+    errorMessage.style.display = 'none';
 
-            // Send the login request via fetch
-            fetch('{{ url_for("auth_app.login_page") }}', {
-                method: 'POST',  // Correct method name here
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(info)  // Convert to JSON
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.access_token) {  // Correct key for success
-                    console.log('Login successful!');
-                    alert('Login successful!');
-                    // Optionally, redirect to another page
-                } else {
-                    alert('Invalid credentials');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error during login');
-            });
-        });
+    // Prepare form data
+    const formData = {
+        email: form.email.value,
+        password: form.password.value
+    };
+
+    // Send POST request using fetch API
+    fetch('{{ url_for("auth_app.login") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',  // Set the content type to JSON
+        },
+        body: JSON.stringify(data)  // The body is correctly set to the JSON string
+    })
+    .then(response => response.json())  // Convert the response into JSON
+    .then(data => {
+        if (data.message === 'Login successful') {
+            window.location.href = "{{ url_for('main_app.search_page') }}";  // Redirect on success
+        } else {
+            errorMessage.textContent = data.message || 'Login failed';
+            errorMessage.style.display = 'block';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        errorMessage.textContent = 'Connection error. Please try again.';
+        errorMessage.style.display = 'block';
     });
+}
 </script>
 {% endblock %}
