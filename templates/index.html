@@ -2,18 +2,59 @@
 
 {% block title %}Home - Book Finder{% endblock %}
 
-{% block content %}
-    <section class="home-container">
-        <h2>Your Gateway to Infinite Stories 📖</h2>
-        
-        <p>Discover, explore, and immerse yourself in a world of literature.<br>
-        Where every page turns into a new adventure.</p>
-
-        <div class="cta-card cta-card--home"> <!---->
-            <h3 class="cta-card__title">Start Exploring</h3>
-            <a href="{{ url_for('auth_app.login') }}" class="btn-card btn-home">
-                Begin Your Literary Journey
-            </a>
+{% block header %}
+<header class="main-header">
+    <div class="header-container">
+        <div class="logo">
+            <h1>📚 Book Finder</h1>
         </div>
-    </section>
+        <div class="meatballs-menu">
+            <button class="meatballs-btn" aria-label="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="dropdown-content">
+                <a href="{{ url_for('auth_app.home') }}"><i class="fas fa-home"></i> Home</a>
+                <a href="{{ url_for('auth_app.login_page') }}"><i class="fas fa-sign-in-alt"></i> Login</a>
+                <a href="{{ url_for('auth_app.search_page') }}"><i class="fas fa-search"></i> Search</a>
+            </div>
+        </div>
+    </div>
+
+    <nav class="main-nav">
+        <ul class="nav-links">
+            <!--
+            <li><a href="{{ url_for('auth_app.home') }}">Home</a></li>
+            <li><a href="{{ url_for('auth_app.login_page') }}">Login</a></li> -->
+            <li><a href="{{ url_for('auth_app.search_page') }}">Search</a></li>
+            <!--
+            <li><a href="{{ url_for('auth_app.signup_page') }}">Sign Up</a></li> 
+            <li><a href="{{ url_for('auth_app.book_detail_page') }}">Book Details</a></li> -->
+        </ul>
+    </nav>
+</header>
+{% endblock %}
+
+{% block content %}
+<section class="home-container">
+    <h2>Your Gateway to Infinite Stories 📖</h2>
+    <p>Discover, explore, and immerse yourself in a world of literature.<br>
+    Where every page turns into a new adventure.</p>
+    <div class="cta-card cta-card--home">
+        <h3 class="cta-card__title">Start Exploring</h3>
+        <a href="{{ url_for('auth_app.login') }}" class="btn-card btn-home">
+            Begin Your Literary Journey
+        </a>
+    </div>
+</section>
+{% endblock %}
+
+{% block footer %}
+<footer>
+    <p>&copy; 2025 Book Finder | All Rights Reserved</p>
+    <p>
+        Partnered with <a href="https://www.waketech.edu" target="_blank" rel="noopener noreferrer">Wake Tech Community College</a>
+    </p>
+</footer>
 {% endblock %}

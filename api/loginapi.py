@@ -98,9 +98,28 @@ def search_page():
     return render_template('search_page.html')
 
 # Add Route for Book Detail Page
+@auth_app.route('/book/', defaults={'book_id': None})
 @auth_app.route('/book/<int:book_id>')
 def book_detail_page(book_id):
     return render_template('Book detail page.html', book_id=book_id)
+
+# Route for User Profile Page
+@auth_app.route('/profile')
+def usr_profile():
+    return render_template('usr_profile.html')
+
+# Route for User Favorites Page
+@auth_app.route('/favorites')
+def usr_favorites():
+    return render_template('usr_favorites.html')
+
+# Route for User Reviews Page
+@auth_app.route('/reviews')
+def usr_reviews():
+    return render_template('usr_review.html')
+
+
+
 
 
 if __name__ == '__main__':

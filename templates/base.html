@@ -4,46 +4,64 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Book Finder{% endblock %}</title>
-    
+  
     <!-- Link to Main CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-
-    <!-- Font Awesome for Icons
+    <!-- Font Awesome for Icons -->
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-    -->
 </head>
 <body>
-
-    <!-- Header -->
-    <header>
-        <div class="logo">
-            <h1>📚 Book Finder</h1>
+    <!-- Meatballs Menu Navigation -->
+    <div class="meatballs-menu">
+        <button class="meatballs-btn" aria-label="Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <div class="dropdown-content">
+            <a href="{{ url_for('auth_app.home') }}"><i class="fas fa-home"></i> Home</a>
+            <a href="{{ url_for('auth_app.login_page') }}"><i class="fas fa-sign-in-alt"></i> Login</a>
+            <a href="{{ url_for('auth_app.search_page') }}"><i class="fas fa-search"></i> Search</a>
         </div>
-        <nav>
-            <ul>
-                <li><a href="{{ url_for('auth_app.home') }}">Home</a></li>
-                <li><a href="{{ url_for('auth_app.login_page') }}">Login</a></li>
-                <li><a href="{{ url_for('auth_app.signup_page') }}">Sign Up</a></li>
-                <li><a href="{{ url_for('auth_app.search_page') }}">Search</a></li>
-            </ul>
-        </nav>
-    </header>
+    </div>
+
+    <!-- Header Block -->
+    {% block header %}{% endblock %}
 
     <!-- Main Content Block -->
     <main>
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Footer -->
-    <footer>
-        <p>&copy; 2025 Book Finder | All Rights Reserved</p>
-        <p>
-            Partnered with <a href="https://www.waketech.edu" target="_blank" rel="noopener noreferrer">Wake Tech Community College</a>
-        </p>
-    </footer>
+    <!-- Footer Block -->
+    {% block footer %}{% endblock %}
 
+    <script>
+        // Toggle dropdown menu
+        document.querySelector('.meatballs-btn').addEventListener('click', function() {
+            this.classList.toggle('active');
+            document.querySelector('.dropdown-content').classList.toggle('show');
+        });
+
+        // Close dropdown when clicking outside
+        window.addEventListener('click', function(event) {
+            if (!event.target.matches('.meatballs-btn') && !event.target.matches('.meatballs-btn span')) {
+                const dropdowns = document.querySelectorAll('.dropdown-content');
+                dropdowns.forEach(dropdown => {
+                    if (dropdown.classList.contains('show')) {
+                        dropdown.classList.remove('show');
+                    }
+                });
+                const buttons = document.querySelectorAll('.meatballs-btn');
+                buttons.forEach(button => {
+                    if (button.classList.contains('active')) {
+                        button.classList.remove('active');
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>

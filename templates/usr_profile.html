@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}{{ username }} - Profile{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <!-- Profile Header -->
+    <div class="profile-header">
+        <div class="avatar">
+            <span class="emoji">👤</span>
+        </div>
+        <h1 class="username">{{ username }}</h1>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="action-cards">
+        <a href="{{ url_for('auth_app.usr_favorites') }}" class="action-card">
+            <div class="card-icon heart">
+                <span class="emoji">❤️</span>
+            </div>
+            <div class="card-content">
+                <h3>Wishlist</h3>
+                <p>View your saved books</p>
+            </div>
+            
+        </a>
+        
+        <a href="{{ url_for('auth_app.usr_reviews') }}" class="action-card">
+            <div class="card-icon comment">
+                <span class="emoji">✍️</span>
+            </div>
+            <div class="card-content">
+                <h3>My Reviews</h3>
+                <p>Manage your book reviews</p>
+            </div>
+            
+        </a>
+        
+        <a href="{{ url_for('auth_app.search_page') }}" class="action-card">
+            <div class="card-icon search">
+                <span class="emoji">🔍</span>
+            </div>
+            <div class="card-content">
+                <h3>Find Books</h3>
+                <p>Discover new reads</p>
+            </div>
+            
+        </a>
+    </div>
+</div>
+{% endblock %}
