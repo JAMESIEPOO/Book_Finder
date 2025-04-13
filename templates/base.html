@@ -25,8 +25,13 @@
         <nav>
             <ul>
                 <li><a href="{{ url_for('auth_app.home') }}">Home</a></li>
+            {% if session.username %}
+                <li><span>Welcome, {{ session.username }}</span></li>
+                <li><a href="{{ url_for('auth_app.logout') }}">Logout</a></li>
+            {% else %}
                 <li><a href="{{ url_for('auth_app.login_page') }}">Login</a></li>
                 <li><a href="{{ url_for('auth_app.signup_page') }}">Sign Up</a></li>
+            {% endif %}
                 <li><a href="{{ url_for('auth_app.search_page') }}">Search</a></li>
             </ul>
         </nav>
@@ -44,6 +49,9 @@
             Partnered with <a href="https://www.waketech.edu" target="_blank" rel="noopener noreferrer">Wake Tech Community College</a>
         </p>
     </footer>
+
+    <!-- ✅ Scripts injected from child templates go here -->
+    {% block scripts %}{% endblock %}
 
 </body>
 </html>
