@@ -58,12 +58,6 @@ def login_page():
 
 @auth_app.route('/login', methods=['POST'], endpoint='login')
 def login():
-    # Debug incoming request
-    print("🔥 LOGIN ATTEMPT")
-    print("headers:", request.headers)
-    print("raw body:", request.data)
-    print("parsed json:", request.json)
-
     data = request.json
     email = data.get('email')
     password = data.get('password')
@@ -86,8 +80,8 @@ def login():
 
 @auth_app.route('/logout')
 def logout():
-    session.clear()  # 🔐 Clears all session data (user ID, username, email, etc.)
-    return redirect(url_for('auth_app.home'))
+    session.clear()
+    return redirect(url_for('auth_app.login_page'))
 
 @auth_app.route('/search')
 def search_page():

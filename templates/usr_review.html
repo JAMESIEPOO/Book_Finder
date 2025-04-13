@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+
+{% block title %}My Reviews{% endblock %}
+
+{% block content %}
+<div class="reviews-container">
+    <div class="section-header">
+        <h1 class="gold-text"><i class="fas fa-comment-alt"></i> My Reviews</h1>
+    </div>
+    
+    <div class="cards-container">
+        {% for review in reviews %}
+        <div class="content-card" data-review-id="{{ review.id }}">
+            <div class="card-header">
+                <div class="book-cover">
+                    <img src="{{ review.book_cover_url }}" alt="{{ review.book_title }}">
+                </div>
+                <div class="book-info">
+                    <h3 class="gold-text">{{ review.book_title }}</h3>
+                    <p class="muted-text">By {{ review.book_author }}</p>
+                </div>
+            </div>
+            
+            <div class="card-body">
+                <div class="rating-display" data-rating="{{ review.rating }}">
+                    {% for i in range(1, 6) %}
+                    <span class="star {% if i <= review.rating %}active{% endif %}" data-value="{{ i }}">★</span>
+                    {% endfor %}
+                    <button class="text-btn danger reset-rating">×</button>
+                </div>
+                
+                <div class="review-content view-mode">
+                    <p>{{ review.text }}</p>
+                    <button class="text-btn edit-btn">✏️ Edit Review</button>
+                </div>
+                
+                <div class="review-content edit-mode" style="display: none;">
+                    <textarea class="form-input">{{ review.text }}</textarea>
+                    <div class="form-actions">
+                        <button class="gold-btn">💾 Save</button>
+                        <button class="text-btn cancel-btn">❌ Cancel</button>
+                    </div>
+                </div>
+                
+                <p class="muted-text small">📅 {{ review.date_posted }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Edit Review Functionality
+        document.querySelectorAll('.edit-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const reviewCard = this.closest('.content-card');
+                reviewCard.querySelector('.view-mode').style.display = 'none';
+                reviewCard.querySelector('.edit-mode').style.display = 'block';
+                reviewCard.querySelector('.form-input').focus();
+            });
+        });
+
+        // Cancel Edit Functionality
+        document.querySelectorAll('.cancel-btn').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const reviewCard = this.closest('.content-card');
+                reviewCard.querySelector('.edit-mode').style.display = 'none';
+                reviewCard.querySelector('.view-mode').style.display = 'block';
+            });
+        });
+
+        // Save Review Functionality
+        document.querySelectorAll('.gold-btn').forEach(button => {
+            if(button.textContent.includes('Save')) {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const reviewCard = this.closest('.content-card');
+                    const reviewId = reviewCard.dataset.reviewId;
+                    const newText = reviewCard.querySelector('.form-input').value;
+                    
+                    // Update display
+                    reviewCard.querySelector('.view-mode p').textContent = newText;
+                    reviewCard.querySelector('.edit-mode').style.display = 'none';
+                    reviewCard.querySelector('.view-mode').style.display = 'block';
+                    
+                    // Here you would typically add AJAX call to save to server
+                    console.log(`Saving review ${reviewId}:`, newText);
+                });
+            }
+        });
+
+        // Star Rating Functionality
+        document.querySelectorAll('.rating-display').forEach(ratingContainer => {
+            const stars = ratingContainer.querySelectorAll('.star');
+            const resetButton = ratingContainer.querySelector('.reset-rating');
+            const initialRating = parseInt(ratingContainer.dataset.rating) || 0;
+            
+            // Initialize stars
+            updateStars(stars, initialRating);
+            
+            // Star click handler
+            stars.forEach(star => {
+                star.addEventListener('click', function() {
+                    const value = parseInt(this.dataset.value);
+                    updateStars(stars, value);
+                    handleRatingChange(ratingContainer, value);
+                });
+            });
+            
+            // Reset rating handler
+            if(resetButton) {
+                resetButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    updateStars(stars, 0);
+                    handleRatingChange(ratingContainer, 0);
+                });
+            }
+        });
+
+        function updateStars(stars, rating) {
+            stars.forEach(star => {
+                const value = parseInt(star.dataset.value);
+                star.classList.toggle('active', value <= rating);
+            });
+        }
+
+        function handleRatingChange(ratingContainer, newRating) {
+            const reviewCard = ratingContainer.closest('.content-card');
+            const reviewId = reviewCard.dataset.reviewId;
+            
+            // Here you would typically add AJAX call to update rating
+            console.log(`Updated rating for review ${reviewId} to ${newRating}`);
+        }
+
+        // Clear new review form (if present)
+        document.querySelectorAll('.danger').forEach(btn => {
+            if(btn.textContent.includes('Clear')) {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const form = this.closest('.rating-box');
+                    form.querySelectorAll('.star').forEach(star => star.classList.remove('active'));
+                    form.querySelector('textarea').value = '';
+                });
+            }
+        });
+    });
+</script>
+{% endblock %}
