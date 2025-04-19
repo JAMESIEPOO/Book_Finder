@@ -18,7 +18,7 @@ def profile():
 def usr_favorites():
     """Render the user's wishlist/favorites"""
     user = User.query.filter_by(username=get_jwt_identity()).first_or_404()
-    # Assuming Favorite model has a relationship to Book as 'book'
+  
     favorites = [fav.book for fav in user.favorites]
     return render_template('favorites.html', favorites=favorites)
 
@@ -39,6 +39,3 @@ def search_page():
         results = Book.query.filter(Book.title.ilike(f'%{query}%')).all()
     return render_template('search.html', results=results)
 
-# In your application factory or main file, register the blueprint:
-# from auth_app_routes import auth_app
-# app.register_blueprint(auth_app)
