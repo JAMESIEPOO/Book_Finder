@@ -8,3 +8,6 @@ Sprint 4:
 Home page redirection works exacly as it should.
 Issues pertaining to not being able to test the other pages has been fixed somewhat, the search page now works but publisher and authors still does not, and the search page doesn't redirect anywhere at the moment
 The login and signup issues continue to persist but this time no error pop ups are returned, as once you click the button to sign up or log in the page effectively reloads.
+
+Sprint 5:
+The only major bug remaining is the search page, it still does not redirect to other pages.
