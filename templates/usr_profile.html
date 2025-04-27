@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Your Profile{% endblock %}
+
+{% block content %}
+<div class="profile-container" style="display: flex; justify-content: center; align-items: center; min-height: 80vh;">
+    <div style="background: rgba(0, 0, 0, 0.7); padding: 40px; border-radius: 12px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5); text-align: center; max-width: 600px; color: #FFD700;">
+        <h1>Welcome, {{ username }}!</h1>
+        <div class="profile-actions" style="margin-top: 2rem;">
+            <a href="/favorites" class="btn btn-primary" style="margin: 0.5rem;">View Favorites ❤️</a>
+            <a href="/reviews" class="btn btn-primary" style="margin: 0.5rem;">Your Reviews 💬</a>
+            <a href="/search" class="btn btn-secondary" style="margin: 0.5rem;">Search Books 📚</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

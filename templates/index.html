@@ -1,9 +1,27 @@
 {% extends 'base.html' %}
 
-{% block head %}
-<h1>Template</h1>
-{% endblock %}
+{% block title %}Home - Book Finder{% endblock %}
 
+{% block content %}
+<section class="home-container">
+    <h2>
+        {% if session.username %}
+            Welcome {{ session.username }}, your gateway to infinite stories 📖
+        {% else %}
+            Your Gateway to Infinite Stories 📖
+        {% endif %}
+    </h2>
 
-{% block body %}
+    <p>Discover, explore, and immerse yourself in a world of literature.<br>
+    Where every page turns into a new adventure.</p>
+
+    <div class="cta-card cta-card--home">
+        {% if not session.username %}
+            <h3 class="cta-card__title">Start Exploring</h3>
+            <a href="{{ url_for('auth_app.login') }}" class="btn-card btn-home">
+                Begin Your Literary Journey
+            </a>
+        {% endif %}
+    </div>
+</section>
 {% endblock %}

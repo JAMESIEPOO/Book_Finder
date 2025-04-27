@@ -2,12 +2,51 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Book Finder{% endblock %}</title>
+
+    <!-- Link to Main CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-    {% block head %}
-    {% endblock %}
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    {% block body %}
-    {% endblock %}
+
+    <!-- Header -->
+    <header>
+    <div class="logo">
+        <h1>📚 Book Finder</h1>
+    </div>
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('auth_app.home') }}">Home</a></li>
+            {% if session.username %}
+                <li class="nav-item">
+                  <a class="nav-link" href="/profile" style="color: #FFD700; font-weight: bold;">
+                    Welcome, {{ session.username }}
+                  </a>
+                </li>
+                <li><a href="{{ url_for('auth_app.logout') }}">Logout</a></li>
+            {% else %}
+                <li><a href="{{ url_for('auth_app.login_page') }}">Login</a></li>
+                <li><a href="{{ url_for('auth_app.signup_page') }}">Sign Up</a></li>
+            {% endif %}
+            <li><a href="{{ url_for('auth_app.search_page') }}">Search</a></li>
+        </ul>
+    </nav>
+</header>
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Book Finder | All Rights Reserved</p>
+        <p>
+            Partnered with <a href="https://www.waketech.edu" target="_blank" rel="noopener noreferrer">Wake Tech Community College</a>
+        </p>
+    </footer>
+
+    {% block scripts %}{% endblock %}
 </body>
 </html>

@@ -1,22 +1,80 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../static/css/style.css">
-    <title>Login</title>
-</head>
-<body>
-    <div class="container">
-        <h1>Login to your account</h1>
-        <form action="#" method="POST">
-            <label for="email">Email:</label>
+{% extends 'base.html' %}
+
+{% block title %}Login - Book Finder{% endblock %}
+
+{% block content %}
+<section class="auth-container">
+    <h1>Welcome Back</h1>
+    <div class="error-message" id="errorMessage" style="display: none;"></div>
+    <div class="success-message" id="successMessage" style="display: none;"></div>
+
+    <form class="auth-form" id="login" method="POST" action="#" onsubmit="validateForm(event)">
+        <div class="form-group">
+            <label for="email">Email Address</label>
             <input type="email" id="email" name="email" required>
-            <label for="password">Password:</label>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
             <input type="password" id="password" name="password" required>
-            <button type="submit">Login</button>
-        </form>
-        <p>Don't have an account? <a href="./signup.html">Sign up here</a>.</p>
+        </div>
+
+        <button type="submit">Log In</button>
+    </form>
+
+    <div class="auth-links">
+        <p>Not a member? <a href="{{ url_for('auth_app.signup_page') }}">Sign up here</a></p>
     </div>
-</body>
-</html>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function validateForm(event) {
+        event.preventDefault();
+        console.log("🔥 JavaScript login triggered");
+
+        const form = document.getElementById('login');
+        const errorMessage = document.getElementById('errorMessage');
+        const successMessage = document.getElementById('successMessage');
+
+        errorMessage.textContent = '';
+        errorMessage.style.display = 'none';
+        successMessage.textContent = '';
+        successMessage.style.display = 'none';
+
+        const formData = {
+            email: form.email.value,
+            password: form.password.value
+        };
+
+        fetch('/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json().then(data => ({ status: response.status, body: data })))
+        .then(({ status, body }) => {
+            if (status === 200) {
+                successMessage.textContent = 'Login successful!';
+                successMessage.style.display = 'block';
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 1000);
+            } else {
+                errorMessage.textContent = body.message || 'Login failed';
+                errorMessage.style.display = 'block';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            errorMessage.textContent = 'Connection error.';
+            errorMessage.style.display = 'block';
+        });
+    }
+</script>
+{% endblock %}

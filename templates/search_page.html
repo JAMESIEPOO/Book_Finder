@@ -1,47 +1,142 @@
-<div class = "search">
-    <select>
-        <option value = 'all' id = "all">All</option>
-        <option value = 'title' id = "title">Title</option>
-        <option value = 'genre' id = "genre">Genre</option>
-        <option value = 'date' id = "date">Publication Date</option>
-    </select>
-    <input id = 'searchbar' placeholder = "Search by Title, Genre, or Publication Date" type = 'text'>
-    <button id = "submit">Go</button>
-</div>
-<div class ="Browse">
-    <h2>Fiction & Literature</h2>
-    <ul>
-        <a href = "#"><li>Folklore & Mythology</li></a>
-        <a href = "#"><li>General Fiction</li></a>
-        <a href = "#"><li>Horror</li></a>
-        <a href = "#"><li>Literature</li></a>
-        <a href = "#"><li>Mystery</li></a>
-        <a href = "#"><li>Poetry</li></a>
-        <a href = "#"><li>Romance</li></a>
-        <a href = "#"><li>Science Fiction & Fantasy</li></a>
-        <a href = "#"><li>Thillers</li></a>
-        <a href = "#"><li>Westerns</li></a>
-    </ul>
+{% extends 'base.html' %}
 
-    <h2>Nonfiction</h2>
-    <ul>
-        <a href = "#"><li>
-            Art, Architecture & Photography
-        </li></a>
-        <a href = "#"><li>Astrology</li></a>
-        <a href = "#"><li>Biography</li></a>
-        <a href = "#"><li>Business Books</li></a>
-        <a href = "#"><li>Computers</li></a>
-        <a href = "#"><li>Cookbooks & Food</li></a>
-        <a href = "#"><li>Craft & Hobbies</li></a>
-        <a href = "#"><li>Politics</li></a>
-        <a href = "#"><li>Education</li></a>
-        <a href = "#"><li>History</li></a>
-        <a href = "#"><li>Foreign Languages</li></a>
-        <a href = "#"><li>Nature</li></a>
-        <a href = "#"><li>Pets</li></a>
-        <a href = "#"><li>Pyschology</li></a>
-        <a href = "#"><li>Science & Technology</li></a>
-        <a href = "#"><li>True Crime</li></a>
-    </ul>
+{% block title %}Search - Book Finder{% endblock %}
+
+{% block content %}
+<div class="search-container">
+    <!-- Search Input and Button -->
+    <div class="search-box">
+        <input id="searchbar" placeholder="Search by Title, Author ID, or Date Published" type="text">
+        <button id="submit">Go</button>
+    </div>
+
+    <!-- Search Results Section (MUST exist for JavaScript) -->
+    <div id="search-results"></div>
+
+    <!-- Browse Filters Section -->
+    <div class="browse-container">
+        <select id="categoryFilter">
+            <option value="all">All</option>
+            <option value="fiction-literature">Fiction & Literature</option>
+            <option value="nonfiction">Nonfiction</option>
+        </select>
+
+        <div class="category-section" id="fiction-literature">
+            <h2>Fiction & Literature</h2>
+            <ul>
+                <li><a href="#">Folklore & Mythology</a></li>
+                <li><a href="#">General Fiction</a></li>
+                <li><a href="#">Horror</a></li>
+                <li><a href="#">Literature</a></li>
+                <li><a href="#">Mystery</a></li>
+                <li><a href="#">Poetry</a></li>
+                <li><a href="#">Romance</a></li>
+                <li><a href="#">Science Fiction & Fantasy</a></li>
+                <li><a href="#">Thrillers</a></li>
+                <li><a href="#">Westerns</a></li>
+            </ul>
+        </div>
+
+        <div class="category-section" id="nonfiction">
+            <h2>Nonfiction</h2>
+            <ul>
+                <li><a href="#">Art, Architecture & Photography</a></li>
+                <li><a href="#">Astrology</a></li>
+                <li><a href="#">Biography</a></li>
+                <li><a href="#">Business Books</a></li>
+                <li><a href="#">Computers</a></li>
+                <li><a href="#">Cookbooks & Food</a></li>
+                <li><a href="#">Craft & Hobbies</a></li>
+                <li><a href="#">Politics</a></li>
+                <li><a href="#">Education</a></li>
+                <li><a href="#">History</a></li>
+                <li><a href="#">Foreign Languages</a></li>
+                <li><a href="#">Nature</a></li>
+                <li><a href="#">Pets</a></li>
+                <li><a href="#">Psychology</a></li>
+                <li><a href="#">Science & Technology</a></li>
+                <li><a href="#">True Crime</a></li>
+            </ul>
+        </div>
+    </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    function performSearch() {
+        const query = document.getElementById('searchbar').value.trim();
+        if (!query) {
+            alert('Please enter a search query!');
+            return;
+        }
+
+        fetch(`/search/?query=${encodeURIComponent(query)}&filter=all`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Search request failed');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const resultsDiv = document.getElementById('search-results');
+                resultsDiv.innerHTML = '';  // Clear previous results
+
+                if (data.length === 0) {
+                    resultsDiv.innerHTML = '<p>No results found.</p>';
+                    return;
+                }
+
+                data.forEach(book => {
+                    const bookCard = document.createElement('div');
+                    bookCard.classList.add('book-card');
+
+                    bookCard.innerHTML = `
+                        <h3><a href="/book/${book.bookID}">${book.title || 'Untitled Book'}</a></h3>
+                        <p><strong>Author:</strong> ${book.authorname || 'Unknown'}</p>
+                        <p><strong>Date Published:</strong> ${book.date_published || 'Unknown'}</p>
+                        <p><strong>Genre:</strong> ${book.genreName || 'Unknown'}</p>
+                        <p><strong>Rating:</strong> ${book.rating !== undefined && book.rating !== null ? book.rating : 'N/A'}</p>
+                        <p><strong>Publisher:</strong> ${book.publisherName || 'Unknown'}</p>
+                        <hr>
+                    `;
+
+                    resultsDiv.appendChild(bookCard);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching search results:', error);
+            });
+    }
+
+    // Click Go Button triggers search
+    document.getElementById('submit').addEventListener('click', function(event) {
+        event.preventDefault();
+        performSearch();
+    });
+
+    // Pressing Enter inside search bar triggers search
+    document.getElementById('searchbar').addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            performSearch();
+        }
+    });
+
+    // Category filter dropdown functionality
+    document.getElementById('categoryFilter').addEventListener('change', function() {
+        const selectedValue = this.value;
+        const categories = document.querySelectorAll('.category-section');
+
+        categories.forEach(category => {
+            if (selectedValue === 'all') {
+                category.style.display = 'block';
+            } else {
+                category.style.display = category.id === selectedValue ? 'block' : 'none';
+            }
+        });
+    });
+
+}); // End DOMContentLoaded
+</script>
+{% endblock %}
