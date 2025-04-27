@@ -18,13 +18,3 @@ The app functions as both a catalogue that allows user's to search for books and
 | Richard Londola | UI Design |
 | Hamza Gulbahari | Backend Design |
 
-## Roadmap
-
-#### Sprint 1
-
-- [x] Create database
-- [x] Create login page
-- [x] Create search page
-- [ ] Create book detail page
-- [x] Create sign up page
-- [ ] Create documentation of web page and database layout
