@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}{{ book.title }} - Book Details{% endblock %}
+
+{% block content %}
+<div class="book-detail-container">
+    <h1>{{ book.title }}</h1>
+    <p><strong>Author:</strong> {{ book.authorname }}</p>
+    <p><strong>Date Published:</strong> {{ book.date_published or 'Unknown' }}</p>
+    <p><strong>Genre:</strong> {{ book.genreName or 'Unknown' }}</p>
+    <p><strong>Rating:</strong> {{ book.rating or 'N/A' }}</p>
+    <p><strong>Publisher:</strong> {{ book.publisherName or 'Unknown' }}</p>
+
+    <form action="/book/add_to_favorites" method="POST" style="margin-top: 2rem;">
+        <input type="hidden" name="book_id" value="{{ book.bookID }}">
+        <button type="submit" class="btn btn-primary">Add to Favorites ❤️</button>
+    </form>
+
+    <a href="/search" class="btn btn-secondary" style="margin-top: 1rem;">Back to Search</a>
+</div>
+{% endblock %}
