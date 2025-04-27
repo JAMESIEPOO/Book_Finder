@@ -4,19 +4,23 @@
 
 {% block content %}
 <div class="search-container">
-    <!-- Category Filter Section -->
+    <!-- Search Input and Button -->
     <div class="search-box">
+        <input id="searchbar" placeholder="Search by Title, Author ID, or Date Published" type="text">
+        <button id="submit">Go</button>
+    </div>
+
+    <!-- Search Results Section (MUST exist for JavaScript) -->
+    <div id="search-results"></div>
+
+    <!-- Browse Filters Section -->
+    <div class="browse-container">
         <select id="categoryFilter">
             <option value="all">All</option>
             <option value="fiction-literature">Fiction & Literature</option>
             <option value="nonfiction">Nonfiction</option>
         </select>
-        <input id='searchbar' placeholder="Search by Title, Genre, or Publication Date" type='text'>
-        <button id="submit">Go</button>
-    </div>
 
-    <!-- Browse Section -->
-    <div class="browse-container">
         <div class="category-section" id="fiction-literature">
             <h2>Fiction & Literature</h2>
             <ul>
@@ -58,11 +62,72 @@
 </div>
 
 <script>
-    // Category filter functionality
+document.addEventListener('DOMContentLoaded', function() {
+
+    function performSearch() {
+        const query = document.getElementById('searchbar').value.trim();
+        if (!query) {
+            alert('Please enter a search query!');
+            return;
+        }
+
+        fetch(`/search/?query=${encodeURIComponent(query)}&filter=all`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Search request failed');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const resultsDiv = document.getElementById('search-results');
+                resultsDiv.innerHTML = '';  // Clear previous results
+
+                if (data.length === 0) {
+                    resultsDiv.innerHTML = '<p>No results found.</p>';
+                    return;
+                }
+
+                data.forEach(book => {
+                    const bookCard = document.createElement('div');
+                    bookCard.classList.add('book-card');
+
+                    bookCard.innerHTML = `
+                        <h3><a href="/book/${book.bookID}">${book.title || 'Untitled Book'}</a></h3>
+                        <p><strong>Author:</strong> ${book.authorname || 'Unknown'}</p>
+                        <p><strong>Date Published:</strong> ${book.date_published || 'Unknown'}</p>
+                        <p><strong>Genre:</strong> ${book.genreName || 'Unknown'}</p>
+                        <p><strong>Rating:</strong> ${book.rating !== undefined && book.rating !== null ? book.rating : 'N/A'}</p>
+                        <p><strong>Publisher:</strong> ${book.publisherName || 'Unknown'}</p>
+                        <hr>
+                    `;
+
+                    resultsDiv.appendChild(bookCard);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching search results:', error);
+            });
+    }
+
+    // Click Go Button triggers search
+    document.getElementById('submit').addEventListener('click', function(event) {
+        event.preventDefault();
+        performSearch();
+    });
+
+    // Pressing Enter inside search bar triggers search
+    document.getElementById('searchbar').addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            performSearch();
+        }
+    });
+
+    // Category filter dropdown functionality
     document.getElementById('categoryFilter').addEventListener('change', function() {
         const selectedValue = this.value;
         const categories = document.querySelectorAll('.category-section');
-        
+
         categories.forEach(category => {
             if (selectedValue === 'all') {
                 category.style.display = 'block';
@@ -71,5 +136,7 @@
             }
         });
     });
+
+}); // End DOMContentLoaded
 </script>
 {% endblock %}

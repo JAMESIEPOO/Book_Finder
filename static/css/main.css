@@ -315,6 +315,113 @@ footer a:hover {
         margin: 1rem auto;
     }
 }
+/* ==================== Search Page Styles ==================== */
+
+/* Container for search input and Go button */
+.search-container {
+    width: 100%;
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Layout for search input and button */
+.search-box {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+/* Search input styling */
+#searchbar {
+    flex: 1;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+/* Go button styling */
+#submit {
+    padding: 12px 20px;
+    font-size: 16px;
+    background-color: #FFD700;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    color: black;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+#submit:hover {
+    background-color: #e6c200;
+}
+
+/* Search results area */
+#search-results {
+    width: 100%;
+}
+
+/* Each book card for a search result */
+.book-card {
+    background: rgba(0, 0, 0, 0.7);
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+    animation: fadeIn 0.5s ease-in;
+    margin-bottom: 1.5rem;
+}
+
+/* Book title styling */
+.book-card h3 {
+    color: #FFD700;
+    margin-bottom: 0.8rem;
+    font-size: 1.8rem;
+}
+
+/* Book info paragraphs */
+.book-card p {
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 0.5rem;
+}
+
+/* Fade-in animation for results */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.browse-container {
+    width: 80%;
+    max-width: 900px;
+    margin: 2rem auto 0 auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.category-section ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+.book-card h3 a {
+    color: #FFD700;  /* Golden color */
+    text-decoration: none;
+}
+
+.book-card h3 a:hover {
+    text-decoration: underline;
+    color: #e6c200;  /* Slightly darker gold on hover */
+}
 
 /* ===================== */
 /* PROFILE PAGE STYLES */
@@ -879,15 +986,4 @@ footer a:hover {
 .dropdown-content a i {
     width: 20px;
     text-align: center;
-}
-
-@media (max-width: 768px) {
-    .meatballs-menu {
-        top: 15px;
-        right: 15px;
-    }
-
-    header {
-        top: 70px;
-    }
 }

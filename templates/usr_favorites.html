@@ -2,44 +2,24 @@
 {% block title %}My Favorites{% endblock %}
 
 {% block content %}
-<div class="favorites-container">
-    <div class="favorites-header-section">
-        <h1 class="favorites-header">📚 Favorite Books</h1>
-        <p class="favorites-subtitle">Your personal collection of beloved reads</p>
-    </div>
-    
-    <div class="favorites-list">
-        {% for favorite in favorites %}
-        <div class="book-item">
-            <div class="book-icon">
-                <span class="book-emoji">📖</span>
-            </div>
-            <div class="book-info">
-                <a href="{{ url_for('book_detail_page', book_id=favorite.book_id) }}" class="book-title">
-                    {{ favorite.title }}
-                </a>
-                <div class="book-actions">
-                    <a href="{{ url_for('book_detail_page', book_id=favorite.book_id) }}" class="action-badge view">
-                        <i class="fas fa-eye"></i> View
-                    </a>
-                    <form method="POST" action="{{ url_for('auth_app.remove_from_favorites', book_id=favorite.book_id) }}" class="remove-form">
-                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                        <button type="submit" class="action-badge remove">
-                            <i class="fas fa-times"></i> Remove
-                        </button>
+<section class="favorites-container">
+    <h2>Your Favorite Books</h2>
+    {% if favorites %}
+        <div class="book-grid">
+            {% for book in favorites %}
+                <div class="book-card">
+                    <img src="{{ book.cover_url or '/static/img/placeholder.png' }}" alt="{{ book.title }}">
+                    <h3>{{ book.title }}</h3>
+                    <p>by {{ book.author }}</p>
+                    <a href="{{ url_for('auth_app.book_detail_page', book_id=book.book_id) }}">View Details</a>
+                    <form action="{{ url_for('auth_app.remove_from_wishlist', book_id=book.book_id) }}" method="POST">
+                        <button type="submit">Remove ❌</button>
                     </form>
                 </div>
-            </div>
+            {% endfor %}
         </div>
-        {% endfor %}
-        
-        {% if not favorites %}
-        <div class="empty-state">
-            <div class="empty-icon">📭</div>
-            <p>Your favorites list is empty</p>
-            <a href="{{ url_for('auth_app.search_page') }}" class="discover-btn">Find New Books</a>
-        </div>
-        {% endif %}
-    </div>
-</div>
+    {% else %}
+        <p>You haven't added any favorites yet.</p>
+    {% endif %}
+</section>
 {% endblock %}

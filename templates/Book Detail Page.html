@@ -1,63 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../static/css/main.css">
-    <title>Book Details</title>
-</head>
-<body>
-    <div class="book-detail-container">
-        <div class="book-header">
-            <div class="book-image">
-                <img src="/api/placeholder/300/450" alt="Book Cover">
-            </div>
-            <div class="book-info">
-                <h1 class="book-title">Book Title</h1>
-                <p class="book-author">By Author Name</p>
-                <div class="book-metadata">
-                    <div class="metadata-item">
-                        <strong>Genre:</strong> Fiction
-                    </div>
-                    <div class="metadata-item">
-                        <strong>Published:</strong> 2024
-                    </div>
-                    <div class="metadata-item">
-                        <strong>ISBN:</strong> 1234567890
-                    </div>
-                    <div class="metadata-item">
-                        <strong>Pages:</strong> 123
-                    </div>
-                    <div class="metadata-item">
-                        <strong>Language:</strong> English
-                    </div>
-                    <div class="metadata-item">
-                        <strong>Publisher:</strong> Publisher Name
-                    </div>
-                </div>
-                <div class="action-buttons">
-                    <button class="gold-btn" id="addToWishlist">Add to Wishlist</button>
-                    <button class="gold-btn danger" id="removeFromWishlist" style="display: none;">Remove from Wishlist</button>
-                </div>
-            </div>
-        </div>
+{% extends 'base.html' %}
+{% block title %}{{ book.title }} - Book Details{% endblock %}
 
-        <div class="book-description">
-            <h2>Description</h2>
-            <p>Book description will go here. This is a detailed summary of the book's content, themes, and other relevant information that might interest potential readers.</p>
-        </div>
-    </div>
+{% block content %}
+<div class="book-detail-container">
+    <h1>{{ book.title }}</h1>
+    <p><strong>Author:</strong> {{ book.authorname }}</p>
+    <p><strong>Date Published:</strong> {{ book.date_published or 'Unknown' }}</p>
+    <p><strong>Genre:</strong> {{ book.genreName or 'Unknown' }}</p>
+    <p><strong>Rating:</strong> {{ book.rating or 'N/A' }}</p>
+    <p><strong>Publisher:</strong> {{ book.publisherName or 'Unknown' }}</p>
 
-    <script>
-        document.getElementById('addToWishlist').addEventListener('click', function() {
-            this.style.display = 'none';
-            document.getElementById('removeFromWishlist').style.display = 'block';
-        });
+    <form action="/book/add_to_favorites" method="POST" style="margin-top: 2rem;">
+        <input type="hidden" name="book_id" value="{{ book.bookID }}">
+        <button type="submit" class="btn btn-primary">Add to Favorites ❤️</button>
+    </form>
 
-        document.getElementById('removeFromWishlist').addEventListener('click', function() {
-            this.style.display = 'none';
-            document.getElementById('addToWishlist').style.display = 'block';
-        });
-    </script>
-</body>
-</html>
+    <a href="/search" class="btn btn-secondary" style="margin-top: 1rem;">Back to Search</a>
+</div>
+{% endblock %}
