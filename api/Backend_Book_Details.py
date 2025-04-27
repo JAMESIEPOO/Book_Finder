@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, session, redirect
 import psycopg2
 import os
 from dotenv import load_dotenv
@@ -6,7 +6,6 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
-# Create Blueprint
 book_detail_api = Blueprint('book_detail_api', __name__, url_prefix='/book')
 
 def connect_db():
@@ -59,27 +58,46 @@ def book_detail(book_id):
 
 @book_detail_api.route('/add_to_favorites', methods=['POST'])
 def add_to_favorites():
+    user_id = session.get('user_id', 1)
     book_id = request.form.get('book_id')
-
-    if not book_id:
-        return "No book selected", 400
-
-    user_id = 1  # Temporary hardcoded user ID
 
     conn = connect_db()
     cursor = conn.cursor()
 
-    # Check if already favorited
-    cursor.execute('SELECT * FROM "Favorites" WHERE "userID" = %s AND "bookID" = %s', (user_id, book_id))
+    cursor.execute('SELECT 1 FROM "Favorites" WHERE "userID" = %s AND "bookID" = %s', (user_id, book_id))
     existing = cursor.fetchone()
 
     if existing:
         conn.close()
         return render_template('already_in_favorites.html')
 
-    # Insert into Favorites table
     cursor.execute('INSERT INTO "Favorites" ("userID", "bookID") VALUES (%s, %s)', (user_id, book_id))
     conn.commit()
     conn.close()
 
     return render_template('added_to_favorites.html')
+
+@book_detail_api.route('/add_review', methods=['POST'])
+def add_review():
+    user_id = session.get('user_id', 1)
+    book_id = request.form.get('book_id')
+
+    conn = connect_db()
+    cursor = conn.cursor()
+
+    cursor.execute('SELECT 1 FROM "Review" WHERE "userID" = %s AND "bookID" = %s', (user_id, book_id))
+    existing_review = cursor.fetchone()
+
+    if existing_review:
+        conn.close()
+        return redirect('/reviews')
+
+    cursor.execute('''
+        INSERT INTO "Review" ("userID", "bookID", "rating", "reviewText")
+        VALUES (%s, %s, %s, %s)
+    ''', (user_id, book_id, 5, ''))
+
+    conn.commit()
+    conn.close()
+
+    return redirect('/reviews')

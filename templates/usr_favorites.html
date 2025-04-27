@@ -1,25 +1,27 @@
 {% extends 'base.html' %}
-{% block title %}My Favorites{% endblock %}
+{% block title %}Your Favorites{% endblock %}
 
 {% block content %}
-<section class="favorites-container">
-    <h2>Your Favorite Books</h2>
+<div class="favorites-container" style="padding: 2rem;">
+    <h1 style="color: #FFD700; text-align: center; margin-bottom: 2rem;">Your Favorite Books ❤️</h1>
+
     {% if favorites %}
-        <div class="book-grid">
-            {% for book in favorites %}
-                <div class="book-card">
-                    <img src="{{ book.cover_url or '/static/img/placeholder.png' }}" alt="{{ book.title }}">
-                    <h3>{{ book.title }}</h3>
-                    <p>by {{ book.author }}</p>
-                    <a href="{{ url_for('auth_app.book_detail_page', book_id=book.book_id) }}">View Details</a>
-                    <form action="{{ url_for('auth_app.remove_from_wishlist', book_id=book.book_id) }}" method="POST">
-                        <button type="submit">Remove ❌</button>
-                    </form>
-                </div>
-            {% endfor %}
+    <div class="favorites-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem;">
+        {% for book in favorites %}
+        <div class="book-card" style="background: rgba(0,0,0,0.7); padding: 1rem; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.5); text-align: center;">
+            <h3 style="color: #FFD700;">{{ book.title }}</h3>
+            <p style="color: rgba(255,255,255,0.9); font-size: 1.2rem; font-weight: 500; margin-top: 0.5rem;">
+                by {{ book.authorname or 'Unknown Author' }}
+            </p>
+
+            <form action="/favorites/remove/{{ book.bookID }}" method="POST" style="margin-top: 1rem;">
+                <button type="submit" class="btn btn-danger">Remove ❌</button>
+            </form>
         </div>
+        {% endfor %}
+    </div>
     {% else %}
-        <p>You haven't added any favorites yet.</p>
+    <p style="color: white; text-align: center;">You haven't added any favorites yet!</p>
     {% endif %}
-</section>
+</div>
 {% endblock %}

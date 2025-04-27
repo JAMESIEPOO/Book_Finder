@@ -1,101 +1,50 @@
-from flask import Blueprint, request, jsonify
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from your_application import db 
-from your_application.models import Book, Favorite, Review
+from flask import Blueprint, render_template, request, redirect, url_for, session
+import psycopg2
+import os
+from dotenv import load_dotenv
 
-api = Blueprint('api', __name__, url_prefix='/api')
+# Load environment variables
+load_dotenv()
 
-@api.route('/favorites', methods=['GET'])
-@jwt_required()
-def get_favorites():
-    """
-    Retrieves the current user's favorites and returns the data as JSON.
-    """
-    user_id = get_jwt_identity()
-    
-    favorites = Favorite.query.filter_by(user_id=user_id).all()
-    favorites_data = []
-    for fav in favorites:
-        # Retrieve the book details for each favorite
-        book = Book.query.get(fav.book_id)
-        # Optionally retrieve an associated review for this book
-        review = Review.query.filter_by(user_id=user_id, book_id=fav.book_id).first()
-        favorites_data.append({
-            'book_id': book.id,
-            'title': book.title,
-            'review': review.content if review else None
-        })
-    
-    return jsonify({
-        "status": "success",
-        "favorites": favorites_data
-    }), 200
+favorites_api = Blueprint('favorites_api', __name__, url_prefix='/favorites')
 
-@api.route('/favorites/add', methods=['POST'])
-@jwt_required()
-def add_to_favorites():
-    """
-    Adds a book to the current user's favorites via a JSON API.
-    
-    Expects a JSON payload with a 'book_id' key, for example:
-    
-        { "book_id": 123 }
-    """
-    user_id = get_jwt_identity()
-    
-    # Expecting JSON data; you can also use request.form if sending form data
-    data = request.get_json()
-    if not data or 'book_id' not in data:
-        return jsonify({
-            "status": "error",
-            "message": "No book ID provided."
-        }), 400
+def connect_db():
+    return psycopg2.connect(
+        dbname=os.getenv('DB_NAME'),
+        user=os.getenv('USER_DB', 'postgres'),
+        password=os.getenv('PASSWORD_DB', 'password'),
+        host='localhost',
+        port='5432'
+    )
 
-    book_id = data['book_id']
-    book = Book.query.get(book_id)
-    
-    if not book:
-        return jsonify({
-            "status": "error",
-            "message": "Book not found."
-        }), 404
+@favorites_api.route('/', methods=['GET'])
+def view_favorites():
+    user_id = session.get('user_id', 1)  # Hardcoded user_id=1 for now
+    conn = connect_db()
+    cursor = conn.cursor()
 
-    # Check if the book is already in favorites
-    existing_favorite = Favorite.query.filter_by(user_id=user_id, book_id=book_id).first()
-    if existing_favorite:
-        return jsonify({
-            "status": "info",
-            "message": "This book is already in your favorites."
-        }), 200
+    cursor.execute('''
+        SELECT b."bookID", b."title", a."authorname"
+        FROM "Favorites" f
+        JOIN "Book" b ON f."bookID" = b."bookID"
+        LEFT JOIN "Author" a ON b."authorID" = a."authorID"
+        WHERE f."userID" = %s
+    ''', (user_id,))
 
-    new_favorite = Favorite(user_id=user_id, book_id=book_id)
-    db.session.add(new_favorite)
-    db.session.commit()
+    favorites = cursor.fetchall()
+    conn.close()
 
-    return jsonify({
-        "status": "success",
-        "message": "Book added to your favorites!"
-    }), 201
+    favorite_books = [{'bookID': f[0], 'title': f[1], 'authorname': f[2]} for f in favorites]
+    return render_template('usr_favorites.html', favorites=favorite_books)
 
-@api.route('/favorites/remove/<int:book_id>', methods=['DELETE'])
-@jwt_required()
-def remove_from_favorites(book_id):
-    """
-    Removes a specified book from the current user's favorites and returns a JSON response.
-    """
-    user_id = get_jwt_identity()
-    favorite = Favorite.query.filter_by(user_id=user_id, book_id=book_id).first()
-    
-    if not favorite:
-        return jsonify({
-            "status": "error",
-            "message": "Favorite not found."
-        }), 404
+@favorites_api.route('/remove/<int:book_id>', methods=['POST'])
+def remove_favorite(book_id):
+    user_id = session.get('user_id', 1)
+    conn = connect_db()
+    cursor = conn.cursor()
 
-    db.session.delete(favorite)
-    db.session.commit()
+    cursor.execute('DELETE FROM "Favorites" WHERE "userID" = %s AND "bookID" = %s', (user_id, book_id))
+    conn.commit()
+    conn.close()
 
-    return jsonify({
-        "status": "success",
-        "message": "Book removed from your favorites."
-    }), 200
+    return redirect(url_for('favorites_api.view_favorites'))

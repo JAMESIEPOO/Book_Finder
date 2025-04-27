@@ -1,152 +1,86 @@
 {% extends 'base.html' %}
-
-{% block title %}My Reviews{% endblock %}
+{% block title %}Your Reviews{% endblock %}
 
 {% block content %}
-<div class="reviews-container">
-    <div class="section-header">
-        <h1 class="gold-text"><i class="fas fa-comment-alt"></i> My Reviews</h1>
-    </div>
-    
-    <div class="cards-container">
+<div class="reviews-container" style="padding: 2rem;">
+    <h1 style="color: #FFD700; text-align: center; margin-bottom: 2rem;">Your Book Reviews 💬</h1>
+
+    {% if reviews %}
+    <div class="reviews-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
         {% for review in reviews %}
-        <div class="content-card" data-review-id="{{ review.id }}">
-            <div class="card-header">
-                <div class="book-cover">
-                    <img src="{{ review.book_cover_url }}" alt="{{ review.book_title }}">
-                </div>
-                <div class="book-info">
-                    <h3 class="gold-text">{{ review.book_title }}</h3>
-                    <p class="muted-text">By {{ review.book_author }}</p>
-                </div>
+        <div class="review-card" style="background: rgba(0,0,0,0.7); padding: 1.5rem; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.5);">
+            <h3 style="color: #FFD700;">{{ review.book_title }}</h3>
+            <p style="color: rgba(255,255,255,0.9);">Rating: {{ review.rating }} ⭐</p>
+
+            <div id="review-display-{{ review.reviewID }}" style="color: rgba(255,255,255,0.9); margin-top: 1rem;">
+                {{ review.reviewText }}
             </div>
-            
-            <div class="card-body">
-                <div class="rating-display" data-rating="{{ review.rating }}">
-                    {% for i in range(1, 6) %}
-                    <span class="star {% if i <= review.rating %}active{% endif %}" data-value="{{ i }}">★</span>
-                    {% endfor %}
-                    <button class="text-btn danger reset-rating">×</button>
-                </div>
-                
-                <div class="review-content view-mode">
-                    <p>{{ review.text }}</p>
-                    <button class="text-btn edit-btn">✏️ Edit Review</button>
-                </div>
-                
-                <div class="review-content edit-mode" style="display: none;">
-                    <textarea class="form-input">{{ review.text }}</textarea>
-                    <div class="form-actions">
-                        <button class="gold-btn">💾 Save</button>
-                        <button class="text-btn cancel-btn">❌ Cancel</button>
-                    </div>
-                </div>
-                
-                <p class="muted-text small">📅 {{ review.date_posted }}</p>
+            <textarea id="review-textarea-{{ review.reviewID }}" class="form-control" style="display: none; margin-top: 1rem;">{{ review.reviewText }}</textarea>
+
+            <div class="review-buttons" style="margin-top: 1rem;">
+                <button id="edit-btn-{{ review.reviewID }}" onclick="editReview({{ review.reviewID }})" class="btn btn-secondary">Edit</button>
+                <button id="save-btn-{{ review.reviewID }}" onclick="saveReview({{ review.reviewID }})" class="btn btn-primary" style="display: none;">Save</button>
+                <button onclick="deleteReview({{ review.reviewID }})" class="btn btn-danger" style="margin-top: 0.5rem;">Delete</button>
             </div>
         </div>
         {% endfor %}
     </div>
+    {% else %}
+    <p style="color: white; text-align: center;">You haven't written any reviews yet!</p>
+    {% endif %}
 </div>
-{% endblock %}
 
-{% block scripts %}
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Edit Review Functionality
-        document.querySelectorAll('.edit-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                const reviewCard = this.closest('.content-card');
-                reviewCard.querySelector('.view-mode').style.display = 'none';
-                reviewCard.querySelector('.edit-mode').style.display = 'block';
-                reviewCard.querySelector('.form-input').focus();
-            });
-        });
+function editReview(reviewID) {
+    document.getElementById(`review-display-${reviewID}`).style.display = 'none';
+    document.getElementById(`review-textarea-${reviewID}`).style.display = 'block';
+    document.getElementById(`edit-btn-${reviewID}`).style.display = 'none';
+    document.getElementById(`save-btn-${reviewID}`).style.display = 'inline-block';
+}
 
-        // Cancel Edit Functionality
-        document.querySelectorAll('.cancel-btn').forEach(button => {
-            button.addEventListener('click', function(e) {
-                e.preventDefault();
-                const reviewCard = this.closest('.content-card');
-                reviewCard.querySelector('.edit-mode').style.display = 'none';
-                reviewCard.querySelector('.view-mode').style.display = 'block';
-            });
-        });
+function saveReview(reviewID) {
+    const updatedText = document.getElementById(`review-textarea-${reviewID}`).value;
 
-        // Save Review Functionality
-        document.querySelectorAll('.gold-btn').forEach(button => {
-            if(button.textContent.includes('Save')) {
-                button.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const reviewCard = this.closest('.content-card');
-                    const reviewId = reviewCard.dataset.reviewId;
-                    const newText = reviewCard.querySelector('.form-input').value;
-                    
-                    // Update display
-                    reviewCard.querySelector('.view-mode p').textContent = newText;
-                    reviewCard.querySelector('.edit-mode').style.display = 'none';
-                    reviewCard.querySelector('.view-mode').style.display = 'block';
-                    
-                    // Here you would typically add AJAX call to save to server
-                    console.log(`Saving review ${reviewId}:`, newText);
-                });
-            }
-        });
-
-        // Star Rating Functionality
-        document.querySelectorAll('.rating-display').forEach(ratingContainer => {
-            const stars = ratingContainer.querySelectorAll('.star');
-            const resetButton = ratingContainer.querySelector('.reset-rating');
-            const initialRating = parseInt(ratingContainer.dataset.rating) || 0;
-            
-            // Initialize stars
-            updateStars(stars, initialRating);
-            
-            // Star click handler
-            stars.forEach(star => {
-                star.addEventListener('click', function() {
-                    const value = parseInt(this.dataset.value);
-                    updateStars(stars, value);
-                    handleRatingChange(ratingContainer, value);
-                });
-            });
-            
-            // Reset rating handler
-            if(resetButton) {
-                resetButton.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    updateStars(stars, 0);
-                    handleRatingChange(ratingContainer, 0);
-                });
-            }
-        });
-
-        function updateStars(stars, rating) {
-            stars.forEach(star => {
-                const value = parseInt(star.dataset.value);
-                star.classList.toggle('active', value <= rating);
-            });
+    fetch(`/reviews/${reviewID}/update`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ reviewText: updatedText })
+    })
+    .then(response => {
+        if (response.ok) {
+            // Update display text and switch back to view mode
+            document.getElementById(`review-display-${reviewID}`).innerText = updatedText;
+            document.getElementById(`review-display-${reviewID}`).style.display = 'block';
+            document.getElementById(`review-textarea-${reviewID}`).style.display = 'none';
+            document.getElementById(`edit-btn-${reviewID}`).style.display = 'inline-block';
+            document.getElementById(`save-btn-${reviewID}`).style.display = 'none';
+            alert('Review updated successfully!');
+        } else {
+            alert('Failed to update review.');
         }
-
-        function handleRatingChange(ratingContainer, newRating) {
-            const reviewCard = ratingContainer.closest('.content-card');
-            const reviewId = reviewCard.dataset.reviewId;
-            
-            // Here you would typically add AJAX call to update rating
-            console.log(`Updated rating for review ${reviewId} to ${newRating}`);
-        }
-
-        // Clear new review form (if present)
-        document.querySelectorAll('.danger').forEach(btn => {
-            if(btn.textContent.includes('Clear')) {
-                btn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const form = this.closest('.rating-box');
-                    form.querySelectorAll('.star').forEach(star => star.classList.remove('active'));
-                    form.querySelector('textarea').value = '';
-                });
-            }
-        });
     });
+}
+    function deleteReview(reviewID) {
+    if (confirm("Are you sure you want to delete this review?")) {
+        fetch(`/reviews/${reviewID}/delete`, {
+            method: 'DELETE'
+        })
+        .then(response => {
+            if (response.ok) {
+                // Remove review card from page
+                const card = document.getElementById(`review-card-${reviewID}`);
+                if (card) {
+                    card.remove();
+                }
+                alert('Review deleted successfully!');
+            } else {
+                alert('Failed to delete review.');
+            }
+        });
+    }
+}
+
 </script>
 {% endblock %}

@@ -1,50 +1,15 @@
 {% extends 'base.html' %}
-{% block title %}{{ username }} - Profile{% endblock %}
+{% block title %}Your Profile{% endblock %}
 
 {% block content %}
-<div class="profile-container">
-    <!-- Profile Header -->
-    <div class="profile-header">
-        <div class="avatar">
-            <span class="emoji">👤</span>
+<div class="profile-container" style="display: flex; justify-content: center; align-items: center; min-height: 80vh;">
+    <div style="background: rgba(0, 0, 0, 0.7); padding: 40px; border-radius: 12px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5); text-align: center; max-width: 600px; color: #FFD700;">
+        <h1>Welcome, {{ username }}!</h1>
+        <div class="profile-actions" style="margin-top: 2rem;">
+            <a href="/favorites" class="btn btn-primary" style="margin: 0.5rem;">View Favorites ❤️</a>
+            <a href="/reviews" class="btn btn-primary" style="margin: 0.5rem;">Your Reviews 💬</a>
+            <a href="/search" class="btn btn-secondary" style="margin: 0.5rem;">Search Books 📚</a>
         </div>
-        <h1 class="username">{{ username }}</h1>
-    </div>
-    
-    <!-- Quick Actions -->
-    <div class="action-cards">
-        <a href="{{ url_for('auth_app.usr_favorites') }}" class="action-card">
-            <div class="card-icon heart">
-                <span class="emoji">❤️</span>
-            </div>
-            <div class="card-content">
-                <h3>Wishlist</h3>
-                <p>View your saved books</p>
-            </div>
-            
-        </a>
-        
-        <a href="{{ url_for('auth_app.usr_reviews') }}" class="action-card">
-            <div class="card-icon comment">
-                <span class="emoji">✍️</span>
-            </div>
-            <div class="card-content">
-                <h3>My Reviews</h3>
-                <p>Manage your book reviews</p>
-            </div>
-            
-        </a>
-        
-        <a href="{{ url_for('auth_app.search_page') }}" class="action-card">
-            <div class="card-icon search">
-                <span class="emoji">🔍</span>
-            </div>
-            <div class="card-content">
-                <h3>Find Books</h3>
-                <p>Discover new reads</p>
-            </div>
-            
-        </a>
     </div>
 </div>
 {% endblock %}

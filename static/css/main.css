@@ -479,6 +479,19 @@ footer a:hover {
     border: 1px solid rgba(255, 215, 0, 0.3);
     transition: all 0.3s ease;
 }
+.profile-actions a {
+    color: #FFD700 !important;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.profile-actions a:hover {
+    text-decoration: underline;
+}
+
+.profile-actions a:visited {
+    color: #FFD700 !important;
+}
 
 /* ===================== */
 /* FAVORITES PAGE STYLES */
