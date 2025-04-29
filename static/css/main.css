@@ -189,95 +189,103 @@ footer a:hover {
     }
 }
 
-/* ===================== */
-/* SEARCH PAGE STYLES */
-/* ===================== */
+/* ==================== Search Page Styles ==================== */
+/* SEARCH PAGE STYLES (Updated) */
+
 .search-container {
-    max-width: 1000px; /*  */
-    margin: 1.5rem auto; /*  */
+    max-width: 1000px;
+    margin: 1.5rem auto;
     padding: 0 1rem;
+    width: 90%;
 }
 
 .search-box {
     display: flex;
+    flex-wrap: wrap; /* NEW: allow input and button to wrap if too small */
     gap: 1rem;
-    margin-bottom: 2.5rem; /*  */
+    margin-bottom: 2.5rem;
     background: rgba(0, 0, 0, 0.7);
-    padding: 1.25rem; /*  */
-    border-radius: 12px; /*  */
+    padding: 1.25rem;
+    border-radius: 12px;
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 215, 0, 0.3);
-}
-
-.search-box select {
-    padding: 0.8rem 1.2rem;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 215, 0, 0.3);
-    color: white;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFD700'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right 1rem center;
-    background-size: 1em;
-}
-
-.search-box select option {
-    background: rgba(0, 0, 0, 0.9);
-    color: white;
-    padding: 10px;
-}
-
-.search-box select:focus {
-    background: rgba(0, 0, 0, 0.8);
-    outline: 1px solid #FFD700;
+    width: 100%;
 }
 
 #searchbar {
     flex: 1;
+    min-width: 250px; /* NEW: minimum width for input */
     padding: 0.8rem 1.2rem;
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 215, 0, 0.3);
     border-radius: 8px;
     color: white;
+    font-size: 1rem;
     transition: all 0.3s ease;
 }
 
 #submit {
     padding: 0.8rem 2rem;
     background: #FFD700;
+    color: black;
+    font-weight: bold;
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: background 0.3s ease;
+    white-space: nowrap;
+}
+
+#submit:hover {
+    background: #e6c200;
 }
 
 .browse-container {
+    width: 100%;
     background: rgba(0, 0, 0, 0.7);
-    padding: 1.75rem; /*  */
-    border-radius: 12px; /*  */
+    padding: 2rem;
+    border-radius: 12px;
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 215, 0, 0.3);
+    margin-top: 2rem;
+}
+
+#categoryFilter {
+    width: 100%;
+    padding: 0.8rem;
+    margin-bottom: 2rem;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    color: rgb(223, 163, 9);
+    font-size: 1rem;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFD700'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1em;
+    cursor: pointer;
+}
+
+.category-section {
+    width: 100%;
+    margin-bottom: 2rem;
 }
 
 .category-section h2 {
     color: #FFD700;
-    font-size: 1.6rem; /*  */
-    margin-bottom: 1.2rem; /*  */
-    padding-left: 0.8rem; /*  */
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
     border-left: 4px solid #FFD700;
+    padding-left: 0.8rem;
 }
 
 .category-section ul {
     list-style: none;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /*  */
-    gap: 0.8rem;
-    margin-bottom: 2rem; /*  */
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
+    gap: 1rem;
+    padding: 0;
 }
 
 .category-section li {
@@ -294,10 +302,42 @@ footer a:hover {
 .category-section a {
     color: white;
     text-decoration: none;
-    padding: 0.8rem; /*  */
     display: block;
+    padding: 0.8rem;
 }
 
+/* Search Results Section */
+#search-results {
+    width: 100%;
+    margin-top: 2rem;
+}
+
+.book-card {
+    background: rgba(0, 0, 0, 0.7);
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+    margin-bottom: 1.5rem;
+    animation: fadeIn 0.5s ease-in;
+}
+
+.book-card h3 a {
+    color: #FFD700;
+    text-decoration: none;
+}
+
+.book-card h3 a:hover {
+    text-decoration: underline;
+    color: #e6c200;
+}
+
+.book-card p {
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 0.5rem;
+}
+
+/* Mobile Responsive */
 @media (max-width: 768px) {
     .search-box {
         flex-direction: column;
@@ -308,119 +348,8 @@ footer a:hover {
     }
 
     .category-section ul {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr; /* Stack the list items */
     }
-
-    .search-container {
-        margin: 1rem auto;
-    }
-}
-/* ==================== Search Page Styles ==================== */
-
-/* Container for search input and Go button */
-.search-container {
-    width: 100%;
-    max-width: 900px;
-    margin: 2rem auto;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-/* Layout for search input and button */
-.search-box {
-    display: flex;
-    gap: 10px;
-    width: 100%;
-    margin-bottom: 20px;
-}
-
-/* Search input styling */
-#searchbar {
-    flex: 1;
-    padding: 12px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-}
-
-/* Go button styling */
-#submit {
-    padding: 12px 20px;
-    font-size: 16px;
-    background-color: #FFD700;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    color: black;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-}
-
-#submit:hover {
-    background-color: #e6c200;
-}
-
-/* Search results area */
-#search-results {
-    width: 100%;
-}
-
-/* Each book card for a search result */
-.book-card {
-    background: rgba(0, 0, 0, 0.7);
-    padding: 1.5rem;
-    border: 1px solid rgba(255, 215, 0, 0.3);
-    border-radius: 12px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
-    animation: fadeIn 0.5s ease-in;
-    margin-bottom: 1.5rem;
-}
-
-/* Book title styling */
-.book-card h3 {
-    color: #FFD700;
-    margin-bottom: 0.8rem;
-    font-size: 1.8rem;
-}
-
-/* Book info paragraphs */
-.book-card p {
-    color: rgba(255, 255, 255, 0.9);
-    margin-bottom: 0.5rem;
-}
-
-/* Fade-in animation for results */
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-.browse-container {
-    width: 80%;
-    max-width: 900px;
-    margin: 2rem auto 0 auto;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-.category-section ul {
-    list-style: none;
-    padding: 0;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-}
-.book-card h3 a {
-    color: #FFD700;  /* Golden color */
-    text-decoration: none;
-}
-
-.book-card h3 a:hover {
-    text-decoration: underline;
-    color: #e6c200;  /* Slightly darker gold on hover */
 }
 
 /* ===================== */
