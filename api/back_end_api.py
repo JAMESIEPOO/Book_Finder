@@ -11,11 +11,11 @@ api_app = Blueprint('api', __name__)
 
 def connect_db():
     return psycopg2.connect(
-        dbname='Book_Finder_V2',
-        user=os.getenv('USER_DB', 'postgres'),
-        password=os.getenv('PASSWORD_DB', 'password'),
+        dbname= 'Book_FinderV4',
+        user= 'postgres',
+        password= 'password',
         host='localhost',
-        port='5432',
+        port='5432'
     )
 
 # Define API routes within the Blueprint

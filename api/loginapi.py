@@ -12,11 +12,11 @@ auth_app = Blueprint('auth_app', __name__, template_folder='../templates')
 
 def connect_db():
     return psycopg2.connect(
-        dbname=os.getenv('DB_NAME'),
-        user=os.getenv('USER_DB', 'postgres'),
-        password=os.getenv('PASSWORD_DB', 'password'),
+        dbname= 'Book_FinderV4',
+        user= 'postgres',
+        password= 'password',
         host='localhost',
-        port='5432',
+        port='5432'
     )
 
 @auth_app.route('/')
